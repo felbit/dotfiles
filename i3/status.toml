@@ -1,0 +1,42 @@
+theme = "solarized-dark"
+icons = "awesome"
+
+[[block]]
+block = "maildir"
+interval = 60
+inboxes = ["/home/martin/.local/share/mail/private-gmail/INBOX"]
+threshold_warning = 1
+threshold_critical = 10
+display_type = "new"
+
+[[block]]
+block = "pacman"
+
+[[block]]
+block = "memory"
+display_type = "memory"
+format_mem = "{Mup}%"
+format_swap = "{SUp}%"
+
+[[block]]
+block = "cpu"
+interval = 1
+
+[[block]]
+block = "load"
+interval = 1
+format = "{1m}"
+
+[[block]]
+block = "sound"
+
+[[block]]
+block = "battery"
+driver = "upower"
+format = "{percentage}% {time}"
+
+[[block]]
+block = "time"
+interval = 60
+format = "%a %d/%m %R"
+
