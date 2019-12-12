@@ -1,51 +1,74 @@
-set nocompatible
+" Plug.vim
+call plug#begin(stdpath('data') . '/plugged')
 
-call plug#begin('~/.local/share/nvim/plugged')
+" A universal set of sane defaults for VIM
+Plug 'tpope/vim-sensible'
 
-" Color Schemes
-Plug 'joshdick/onedark.vim'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+" Comment stuff out.
+Plug 'tpope/vim-commentary'
 
-Plug 'scrooloose/nerdtree', { 'on': ['NERDTree', 'NERDTreeToggle', 'NERDTreeMirror']}
+" File Drawer
+Plug 'scrooloose/nerdtree'
 
-" requires fzf package
-Plug 'junegunn/fzf'
+" FZF Fuzzy Finder wrapper for VIM
+Plug '/usr/bin/fzf'
 Plug 'junegunn/fzf.vim'
 
-" Vim-Surround
-" Changes delimierts, e.g. cs"' changes "Hello, World!" to 'Hello, World!'
-Plug 'tpope/vim-surround'
+" Insert or delete brackets, parens, quotes in pars
+Plug 'jiangmiao/auto-pairs'
 
-" Vim-Fugitive
-" The best Git wrapper of all time
-Plug 'tpope/vim-fugitive'
+" Autocompletion
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+let g:deoplete#enable_at_startup = 1
 
-" vimwiki --- Personal documentation system
-Plug 'vimwiki/vimwiki'
+" Linting
+Plug 'dense-analysis/ale'
+let g:ale_fixers = {
+  \    'javascript': ['eslint'],
+  \    'typescript': ['prettier', 'tslint'],
+  \    'vue': ['eslint'],
+  \    'scss': ['prettier'],
+  \    'html': ['prettier'],
+  \    'reason': ['refmt']
+\}
+let g:ale_fix_on_save = 1
 
-" Markdown
-" tabular plug must come before vim-markdown
-Plug 'godlygeek/tabular'
-Plug 'plasticboy/vim-markdown'
 
-" Auto Completion
-"Plug 'ycm-core/YouCompleteMe'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+""" JS / ES / React
+" ES6 Syntax Highlighting
+Plug 'othree/yajs.vim'
 
-"""
-""" Programming Languages
-"""
-" Rust
-Plug 'rust-lang/rust.vim'
+" JSX Syntax Highlighting with TSX support
+Plug 'MaxMEllon/vim-jsx-pretty'
 
+" LSP Client for NEOVIM
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
+let g:LanguageClient_serverCommands = {
+    \ 'javascript': ['javascript-typescript-stdio']
+    \ }
+
+" React Styled Components
+"Plug 'styled-components/vim-styled-components'
 call plug#end()
 
-syntax enable
-colorscheme onedark
+
 filetype plugin indent on
 
-set title
+" Resize window with arrow keys
+nnoremap <Left> :vertical resize +2<CR>
+nnoremap <Right> :vertical resize -2<CR>
+nnoremap <Up> :resize -2<CR>
+nnoremap <Down> :resize +2<CR>
+
+" Move between windows
+nmap <C-j> <C-w><C-j>
+nmap <C-k> <C-w><C-k>
+nmap <C-h> <C-w><C-h>
+nmap <C-l> <C-w><C-l>
+
 set encoding=utf-8
 set scrolloff=3
 set autoindent
@@ -63,24 +86,19 @@ set number
 set relativenumber
 
 set list
-set listchars=tab:▷⋅,trail:⋅,nbsp:⋅,eol:¬
+"set listchars=tab:▷ ,trail:⋅,nbsp:⋅,eol:¬
 
 set ignorecase
 set smartcase
 set incsearch
 set showmatch
 
-set tabstop=4
-set shiftwidth=4
+set tabstop=2
+set shiftwidth=2
 set expandtab
 
-let mapleader=" "
-let g:mapleader=" "
-
-nnoremap <Left> :echoe "Use h"<CR>
-nnoremap <Right> :echoe "Use l"<CR>
-nnoremap <Up> :echoe "Use k"<CR>
-nnoremap <Down> :echoe "Use j"<CR>
+let mapleader=","
+let g:mapleader=","
 
 inoremap <C-E> <End>
 inoremap <C-A> <Home>
@@ -92,16 +110,20 @@ nnoremap Y y$
 nnoremap <Leader>fb :Buffers<CR>
 nnoremap <Leader>ff :Files<CR>
 
+" Use prettier to format JS source code
+au FileType javascript setlocal formatprg=prettier
+au FileType javascript.jsx setlocal formatprg=prettier
+au FileType typescript setlocal formatprg=prettier\ --parser\ typescript
+au FileType html setlocal formatprg=js-beautify\ --type\ html
+au FileType scss setlocal formatprg=prettier\ --parser\ css
+au FileType css setlocal formatprg=prettier\ --parser\ css
+
+" Useful LSP shortcuts
+nnoremap <leader>l :call LanguageClient_contextMenu()<CR>
+nnoremap K :call LanguageClient#textDocument_hover()<CR>
+nnoremap gd :call LanguageClient#textDocument_definition()<CR>
+nnoremap <leader>r :call LanguageClient#textDocument_rename()<CR>
+
 " Shut up
 set noerrorbells visualbell t_vb=
 autocmd GUIEnter * set visualbell t_vb=
-
-" VimWiki with Markdown
-let g:vimwiki_list = [{'path': '~/Dropbox/Wiki/', 'syntax': 'markdown', 'ext': '.md'}]
-
-" Disable MarkDown folding that drives me nuts
-let g:vim_markdown_folding_disabled = 1
-
-" COC Config
-autocmd FileType json syntax match Comment +\/\/.\+$+
-
